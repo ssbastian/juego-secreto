@@ -1,66 +1,74 @@
-/**
- * JUEGO ADIVINANZA NÚMERO
- */
+//acceder a elementos de html
+let numeroSecreto = 0;
+let intentos = 0;
+let listaNumerosSorteados = [ ];
+let numeroMaximo = 10;
 
-//variables
-let numeroMaximoPosible = 100;
-let numeroUsuario = 0;
-let numeroSecreto = Math.floor(Math.random()*numeroMaximoPosible)+1;
-let intentos = 1;
-let palabraVeces = 'vez';
-let maximosIntentos = 2; 
+function asignarTextoElemento(elemento, texto) {
+    let elementoHTML = document.querySelector(elemento);
+  elementoHTML.innerHTML = texto;
+}
 
+function verificarIntento() {
+   // let numeroDeUsuario = document.querySelector('input');
+   let numeroDeUsuario = parseInt( document.getElementById('valorUsuario').value);
+   //console.log(typeof(numeroDeUsuario));
+   console.log(numeroSecreto);
+    if (numeroDeUsuario === numeroSecreto) {
+        asignarTextoElemento('p', `Acertaste el número ${intentos} ${(intentos === 1) ? 'vez' : 'veces'}` );
+        document.getElementById('reiniciar').removeAttribute('disabled'); // quitar el desabilitar del boton
+    }else {
+        //el usuario no acerto
+        if (numeroDeUsuario > numeroSecreto  ){ 
+            asignarTextoElemento('p', 'El número secreto es mayor');
+        } else {
+            asignarTextoElemento('p', 'El número secreto es menor');
+        }
+        intentos++;
+        limpiarCaja();
+    }
+   return;
+}
 
-while (numeroUsuario != numeroSecreto) {
-    numeroUsuario = parseInt(prompt(`Me indicas un n�mero entre uno 1 y ${numeroMaximoPosible} por favor:`));
-   
-    console.log(numeroUsuario);
-    if (numeroUsuario == numeroSecreto) {
-        alert(`Acertaste el n�mero ${numeroUsuario}. Lo hiciste en ${intentos} ${intentos == 1 ? 'vez' : 'veces' }`);
+function limpiarCaja() {
+     document.querySelector('#valorUsuario').value = '';
+} 
+
+function generarNumeroSecreto() { //RECURSIVIDAD
+    let numeroGenerado =  Math.floor(Math.random()*numeroMaximo)+1;
+    //Si ya sorteamos todos los números
+    console.log(listaNumerosSorteados);
+    if (listaNumerosSorteados.length == numeroMaximo) {
+        asignarTextoElemento('p', 'Ya se sortearon todos los números posibles');
     } else {
-            if (numeroUsuario > numeroSecreto) {
-                alert('El numero de secreto es menor')
-            }
-            else {
-                alert('El numero secreto es mayor')
-            }
+        // si número generado esta incluido en la lista 
+        if (listaNumerosSorteados.includes(numeroGenerado)) {
+            return generarNumeroSecreto();
+        } else { 
+            listaNumerosSorteados.push(numeroGenerado);
+            return numeroGenerado;
+       }
     }
-        //alert (`lo siento, no acertaste el numero ${numeroUsuario}`);
-     
-    intentos += 1;
-    palabraVeces = 'veces';
-    if (intentos > maximosIntentos){
-        alert(`Llegaste al numero maximo de intentos ${maximosIntentos}`)
-        break; 
-    }
+
+}
+
+function condicionesIniciales(){
+    asignarTextoElemento('h1', 'Juego del número secreto!');
+    asignarTextoElemento('p', `Indica un número del 1 al ${numeroMaximo}!`);
+    numeroSecreto = generarNumeroSecreto();
+    intentos = 1;
+}
+
+function reiniciarJuego() {
+    // limpiar la caja
+    limpiarCaja();
+    //Indicar mensaje de intervalo de numeros
+    condicionesIniciales();
+    //Generar el número aleatorio
+    //Inicializar el número de intentos
+    //Desabilita el boton nuevo juego
+    document.querySelector('#reiniciar').setAttribute('disabled', 'true'); 
 }
 
 
-        /* 
-        // ejercicio DIAS DE LA SEMANA
-        let diaSemana = prompt('Me indicas que dia de la semana es: ');
-
-        console.log(diaSemana);
-
-        if(diaActual == 'Sabado' || diaActual == 'Domingo') {
-            alert('Buen fin de semana! '); 
-        }else
-            alert('Buena Semana!');
-
-
-        // ejercicio 3 puntuacion
-
-        let puntuacion = prompt('por favor digita tu puntuación');
-
-        if(puntuacion >= 100) {
-            alert('!Felicidades, has ganado')
-        }else
-            alert('Intentalo nuevamente para ganar')
-
-        // ejercicio saldo
-
-        let saldo = 1500;
-        let mensaje = `Su saldo actual es: ${saldo}`;
-        console.localStorage(mensaje);
-
-        */
+condicionesIniciales();
