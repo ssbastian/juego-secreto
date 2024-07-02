@@ -1,2 +1,2 @@
 # juego-secreto
-implementación juego adivinar número secreto
+Implementación juego adivinar número secreto
